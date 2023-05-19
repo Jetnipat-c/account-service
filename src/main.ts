@@ -1,31 +1,15 @@
-import helmet from 'helmet';
-import { AppModule } from './app.module';
-import * as compression from 'compression';
 import { NestFactory } from '@nestjs/core';
-import * as cookieParser from 'cookie-parser';
-import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('port');
-
-  app.enableCors();
-  app.setGlobalPrefix('/api');
-  app.use(cookieParser());
-  app.use(helmet());
-  app.use(compression());
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      disableErrorMessages: false,
-      whitelist: true,
-      transform: true,
-    }),
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.TCP,
+      options: { port: 4001 },
+    },
   );
-
-  await app.listen(port);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  await app.listen();
 }
 bootstrap();

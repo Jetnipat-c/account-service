@@ -1,42 +1,37 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { MessagePattern } from '@nestjs/microservices';
+import { Account } from './entities/account.entity';
+import { FindAccountDto } from './dto/find-account.dto';
 
 @Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @Post()
-  create(@Body() createAccountDto: CreateAccountDto) {
-    return this.accountService.create(createAccountDto);
+  @MessagePattern({ cmd: 'createAccount' })
+  async createAccount(createAccountDto: CreateAccountDto): Promise<any> {
+    return await this.accountService.create(createAccountDto);
   }
 
-  @Get()
-  findAll() {
-    return this.accountService.findAll();
+  @MessagePattern({ cmd: 'findAllAccounts' })
+  async findAllAccounts(): Promise<Account[]> {
+    return await this.accountService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountService.findOne(id);
+  @MessagePattern({ cmd: 'findAccount' })
+  async findAccount(findAccountDto: FindAccountDto): Promise<Account[]> {
+    return await this.accountService.findOne(findAccountDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountService.update(id, updateAccountDto);
+  @MessagePattern({ cmd: 'updateAccount' })
+  async updateAccount(updateAccountDto: UpdateAccountDto): Promise<any> {
+    return await this.accountService.update(updateAccountDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accountService.remove(id);
+  @MessagePattern({ cmd: 'deleteAccount' })
+  async deleteAccount({ id }): Promise<any> {
+    return await this.accountService.remove(id);
   }
 }
