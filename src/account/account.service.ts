@@ -31,7 +31,7 @@ export class AccountService {
     if (validateAccountNumber) {
       return this.create(createAccountDto);
     }
-
+    console.log('randomNumber', randomNumber);
     const account = new Account();
     account.name = createAccountDto.name;
     account.accountNumber = randomNumber;
