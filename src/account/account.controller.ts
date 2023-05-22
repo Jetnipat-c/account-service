@@ -21,7 +21,7 @@ export class AccountController {
   }
 
   @MessagePattern({ cmd: 'findAccount' })
-  async findAccount(findAccountDto: FindAccountDto): Promise<Account[]> {
+  async findAccount(findAccountDto: FindAccountDto): Promise<Account> {
     return await this.accountService.findOne(findAccountDto);
   }
 

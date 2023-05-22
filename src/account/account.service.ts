@@ -44,8 +44,8 @@ export class AccountService {
     return await this.accountsRepository.find();
   }
 
-  async findOne(findAccountDto: FindAccountDto) {
-    return await this.accountsRepository.find({
+  async findOne(findAccountDto: FindAccountDto): Promise<Account> {
+    return await this.accountsRepository.findOne({
       where: { accountNumber: findAccountDto.accountNumber },
     });
   }
